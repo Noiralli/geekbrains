@@ -2,17 +2,25 @@
 <html>
 <head>
   <title>eShop</title>
-  <script defer src="script.js"></script>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <input type="text" class="goods-search" />
-    <button class="search-button" type="button">Искать</button>
-    <button class="cart-button" type="button">Корзина</button>
-  </header>
-  <main>
-    <div class="goods-list"></div>
-  </main>
+  <div id="app">
+    <header>
+      <input type="text" class="goods-search" />
+      <button class="search-button" type="button">Искать</button>
+      <button class="cart-button" type="button">Корзина</button>
+    </header>
+    <main>
+      <div class="goods-list">
+        <div class="goods-item" v-for="good in goods">
+          <h3>{{ good.product_name }}</h3>
+          <p>{{ good.price }}</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
