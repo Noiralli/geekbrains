@@ -1,3 +1,5 @@
+// 1. Привязать добавление товара в корзину к реальному API.
+// 2. Добавить API для удаления товара из корзины.
 // https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/related?hl=ru
 
 const API_URL = 'http://127.0.0.1:3000';
@@ -7,6 +9,7 @@ const app = new Vue({
   data: () => ({
     goods: [],
     filteredGoods: [],
+    cartGoods: [],
     searchLine: '',
   }),
   mounted() {
@@ -19,12 +22,27 @@ const app = new Vue({
       this.goods = JSON.parse(goods);
       this.filteredGoods = JSON.parse(goods);
     });
-    this.makePOSTRequest(`${API_URL}/addToCart`, JSON.stringify({ data: 'obj from front' }), () => null)
+    this.getCartData();
   },
   methods: {
     filterGoods() {
       const regexp = new RegExp(this.searchLine, 'i');
       this.filteredGoods = this.goods.filter(good => regexp.test(good.product_name));
+    },
+    getCartData() {
+      this.makeGETRequest(`${API_URL}/cartData`, (goods) => {
+        this.cartGoods = JSON.parse(goods);
+      });
+    },
+    addGoodToCart(good) {
+      this.makePOSTRequest(`${API_URL}/addToCart`, JSON.stringify(good), () => {
+        this.getCartData();
+      });
+    },
+    deleteGoodFromCart(good) {
+      this.makePOSTRequest(`${API_URL}/deleteFromCart`, JSON.stringify(good), () => {
+        this.getCartData();
+      });
     },
     makeGETRequest(url, callback) {
       var xhr;
@@ -63,6 +81,6 @@ const app = new Vue({
       xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
   
       xhr.send(data);
-    }
+    },
   },
 });

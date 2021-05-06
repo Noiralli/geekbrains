@@ -8,9 +8,9 @@
   <div id="app">
     <header>
       <goods-search v-model="searchLine" @filter-goods="filterGoods"></goods-search>
-      <cart></cart>
+      <cart :delete-from-cart="deleteGoodFromCart" :goods="cartGoods"></cart>
     </header>
-    <goods-list :goods="filteredGoods"></goods-list>
+    <goods-list :add-to-cart="addGoodToCart" :goods="filteredGoods"></goods-list>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>

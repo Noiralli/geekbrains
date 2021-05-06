@@ -1,11 +1,11 @@
 Vue.component('goods-list', {
     name: 'goods-list',
-    props: ['goods'],
+    props: ['goods', 'addToCart'],
     template: `
         <main>
             <div v-if="goods.length !== 0" class="goods-list">
                 <div class="goods-item" v-for="good in goods">
-                    <goods-item :good="good" />
+                    <goods-item @add-to-cart="addToCart" :good="good" />
                 </div>
             </div>
             <div v-else>Нет данных</div>
@@ -20,6 +20,7 @@ Vue.component('goods-item', {
         <div>
             <h3>{{ good.product_name }}</h3>
             <p>{{ good.price }}</p>
+            <button @click="$emit('add-to-cart', good)">Добавить</button>
         </div>
     `
 });
@@ -33,10 +34,11 @@ Vue.component('goods-search', {
             <button @click="$emit('filter-goods')" class="search-button" type="button">Искать</button>
         </div>
     `
-})
+});
 
 Vue.component('cart', {
     name: 'cart',
+    props: ['goods', 'deleteFromCart'],
     data: () => ({
         isVisibleCart: false,
     }),
@@ -49,8 +51,27 @@ Vue.component('cart', {
         <div>
             <button @click="handleCart" class="cart-button" type="button">Корзина</button>
             <div v-show="isVisibleCart" class="cart">
-            Корзина
+                <div>Корзина</div>
+                <div v-if="goods.length !== 0" class="goods-list">
+                    <div class="goods-item" v-for="good in goods">
+                        <cart-item @delete-from-cart="deleteFromCart" :good="good" />
+                    </div>
+                </div>
+                <div v-else>Сделайте покупку</div>
             </div>
         </div>
     `
-})
+});
+
+Vue.component('cart-item', {
+    name: 'goods-item',
+    props: ['good'],
+    template: `
+        <div>
+            <h3>{{ good.product_name }}</h3>
+            <p>{{ good.price }}</p>
+            <button @click.prevent="$emit('delete-from-cart', good)">Удалить</button>
+        </div>
+    `
+});
+
