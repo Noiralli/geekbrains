@@ -1,8 +1,6 @@
-// 1. Добавить методы и обработчики событий для поля поиска. Создать в объекте данных поле searchLine и привязать к нему содержимое поля ввода. На кнопку «Искать» добавить обработчик клика, вызывающий метод FilterGoods.
-// 2. Добавить корзину. В html-шаблон добавить разметку корзины. Добавить в объект данных поле isVisibleCart, управляющее видимостью корзины.
-// 3. *Добавлять в .goods-list заглушку с текстом «Нет данных» в случае, если список товаров пуст.
+// https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/related?hl=ru
 
-const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+const API_URL = 'http://127.0.0.1:3000';
 
 const app = new Vue({
   el: '#app',
@@ -10,10 +8,9 @@ const app = new Vue({
     goods: [],
     filteredGoods: [],
     searchLine: '',
-    isVisibleCart: false,
   }),
   mounted() {
-    this.makeGETRequest(`${API_URL}/catalogData.json`, (goods) => {
+    this.makeGETRequest(`${API_URL}/catalogData`, (goods) => {
       // API который мы исполььзуем возвращает нам массив в строчном представлении (JSON)
       // для работы с ним в приложение, необходимо выполнить процесс десериализации
       
@@ -22,15 +19,12 @@ const app = new Vue({
       this.goods = JSON.parse(goods);
       this.filteredGoods = JSON.parse(goods);
     });
+    this.makePOSTRequest(`${API_URL}/addToCart`, JSON.stringify({ data: 'obj from front' }), () => null)
   },
   methods: {
     filterGoods() {
-      console.log('this.searchLine :>> ', this.searchLine);
       const regexp = new RegExp(this.searchLine, 'i');
       this.filteredGoods = this.goods.filter(good => regexp.test(good.product_name));
-    },
-    handleCart() {
-      this.isVisibleCart = !this.isVisibleCart;
     },
     makeGETRequest(url, callback) {
       var xhr;
@@ -49,11 +43,26 @@ const app = new Vue({
 
       xhr.open('GET', url, true);
       xhr.send();
+    },
+    makePOSTRequest(url, data, callback) {
+      let xhr;
+  
+      if (window.XMLHttpRequest) {
+        xhr = new XMLHttpRequest();
+      } else if (window.ActiveXObject) { 
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+  
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          callback(xhr.responseText);
+        }
+      }
+  
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  
+      xhr.send(data);
     }
   },
-  watch: {
-    filteredGoods() {
-      console.log('this.filteredGoods :>> ', this.filteredGoods);
-    }
-  }
 });

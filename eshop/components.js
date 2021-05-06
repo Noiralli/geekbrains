@@ -23,3 +23,34 @@ Vue.component('goods-item', {
         </div>
     `
 });
+
+Vue.component('goods-search', {
+    name: 'goods-search',
+    props: ['searchLine'],
+    template: `
+        <div>
+            <input :value="searchLine" @input="$emit('input', $event.target.value)" type="text" class="goods-search" />
+            <button @click="$emit('filter-goods')" class="search-button" type="button">Искать</button>
+        </div>
+    `
+})
+
+Vue.component('cart', {
+    name: 'cart',
+    data: () => ({
+        isVisibleCart: false,
+    }),
+    methods: {
+        handleCart() {
+            this.isVisibleCart = !this.isVisibleCart;
+        },
+    },
+    template: `
+        <div>
+            <button @click="handleCart" class="cart-button" type="button">Корзина</button>
+            <div v-show="isVisibleCart" class="cart">
+            Корзина
+            </div>
+        </div>
+    `
+})
